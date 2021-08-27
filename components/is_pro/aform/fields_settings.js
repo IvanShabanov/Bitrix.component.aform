@@ -31,6 +31,9 @@ function AForm_OnFieldsEdit(arParams) {
             "email": {
                 'disable_fields': ['html', 'values', 'value'],
             },
+            "password": {
+                'disable_fields': ['html', 'values', 'value', 'default_value'],
+            },
             "textarea": {
                 'disable_fields': ['html', 'values', 'value'],
             },

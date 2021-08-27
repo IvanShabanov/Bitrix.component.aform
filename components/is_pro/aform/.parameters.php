@@ -33,11 +33,12 @@ while ($arET = $rsET->Fetch())
 
 }
 
+$dir = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
 
 $arComponentParameters = array(
     "GROUPS" => array(
         "FIELDS" => array(
-            "NAME" => GetMessage('FIELDS');
+            "NAME" => GetMessage('FIELDS'),
         ),
         "SAVE" => array(
            "NAME" => GetMessage('SAVE_TO_IBLOCK'),
@@ -48,7 +49,9 @@ $arComponentParameters = array(
         "SMS" => array(
             "NAME" => GetMessage('SEND_SMS')
         ),
-
+        "CUSTOM" => array(
+            "NAME" => GetMessage('CUSTOM')
+        ),
     ),
 	"PARAMETERS" => array(
 
@@ -119,7 +122,7 @@ $arComponentParameters = array(
                 )
             ),
             "TYPE" => "CUSTOM",
-            'JS_FILE' => '/local/components/axi/form/fields_settings.js',
+            'JS_FILE' => $dir.'/fields_settings.js',
             'JS_EVENT' => 'AForm_OnFieldsEdit',
             'JS_DATA' => '',
         ),
@@ -144,7 +147,7 @@ $arComponentParameters = array(
                 )
             ),
             "TYPE" => "CUSTOM",
-            'JS_FILE' => '/local/components/axi/form/el_settings.js',
+            'JS_FILE' => $dir.'/el_settings.js',
             'JS_EVENT' => 'AForm_OnElEdit',
             'JS_DATA' => '',
         ),
@@ -166,7 +169,7 @@ $arComponentParameters = array(
                 )
             ),
             "TYPE" => "CUSTOM",
-            'JS_FILE' => '/local/components/axi/form/el_settings.js',
+            'JS_FILE' => $dir.'/el_settings.js',
             'JS_EVENT' => 'AForm_OnElEdit',
             'JS_DATA' => '',
         ),
@@ -189,9 +192,15 @@ $arComponentParameters = array(
                 )
             ),
             "TYPE" => "CUSTOM",
-            'JS_FILE' => '/local/components/axi/form/el_settings.js',
+            'JS_FILE' => $dir.'/el_settings.js',
             'JS_EVENT' => 'AForm_OnElEdit',
             'JS_DATA' => '',
+        ),
+        'CUSTOM_FUNCTION_SAVE'=>  Array(
+            "PARENT" => "CUSTOM",
+            "NAME" => GetMessage("CUSTOM_FUNCTION_SAVE"),
+            'DEFAULT' => '',
+            "TYPE" => "STRING",
         ),
 	)
 );?>

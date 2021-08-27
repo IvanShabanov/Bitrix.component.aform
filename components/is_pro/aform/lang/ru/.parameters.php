@@ -7,7 +7,7 @@ $MESS["FORMS_BUTTON_TITLE"] = "Текст кнопки Отправить";
 $MESS["FORMS_BUTTON_TITLE_DEFAULT"] = "Отправить";
 
 $MESS['FIELDS'] = "Поля формы";
-$MESS['SAVE_TO_IBLOCK'] = "Параметры сохранения переданных данных в инфоблоке";
+$MESS['SAVE_TO_IBLOCK'] = "Параметры сохранения в инфоблоке";
 $MESS['SEND_MAIL'] = "Параметры отправки EMAIL";
 $MESS['SEND_SMS'] = "Параметры отправки SMS";
 $MESS["FORM_ID"] = "ID формы";
@@ -24,11 +24,6 @@ $MESS["EMAIL_EVENT"] = "Тип события для отправки EMAIL";
 $MESS["EMAIL_FIELDS"] = "Поля EMAIL сообшения";
 $MESS["SMS_EVENT"] = "Тип события для отправки SMS";
 $MESS["SMS_FIELDS"] = "Поля SMS сообшения";
-$MESS["FORM_ID"] = "ID инфоблока";
-$MESS["FORM_ID"] = "ID инфоблока";
-$MESS["FORM_ID"] = "ID инфоблока";
-$MESS["FORM_ID"] = "ID инфоблока";
-$MESS["FORM_ID"] = "ID инфоблока";
-$MESS["FORM_ID"] = "ID инфоблока";
-$MESS["FORM_ID"] = "ID инфоблока";
+$MESS['CUSTOM'] = "Дополнительные параметры";
+$MESS['CUSTOM_FUNCTION_SAVE'] = "Имя PHP функции, которая вызовиться после успешной отправки";
 ?>

@@ -147,6 +147,12 @@ if (!class_exists('aform_component')) {
                     };
                     if ($field['type'] == 'submit') {
                         $have_submit = true;
+                        if ($field['name']=='') {
+                            $field['name'] = 'submit';
+                        };
+                        if ($field['title']=='') {
+                            $field['title'] = 'Отправить';
+                        };
                     };
                     if (empty($field['id'])) {
                         $field['id'] = md5($arParams['FORM_ID'].implode('', $field));
@@ -175,16 +181,22 @@ if (!class_exists('aform_component')) {
             $showForm = true;
             if ($_REQUEST['form_id'] == $arParams['FORM_ID']) {
                 if ($this->ENC->CheckEasyNoCaptha ()) {
-                    $errors = $this->Save();
+                    $arResult['ERRORS'] = $this->Save();
                 } else {
-                    $errors['captcha'] = 'Защита от автоматического заполения не пройдена';
+                    $arResult['ERRORS']['captcha'] = 'Защита от автоматического заполения не пройдена';
                 }
-                if (count($errors) == 0) {
+                $arParams['ERRORS'] = $arResult['ERRORS'];
+
+
+                if (count($arResult['ERRORS']) == 0) {
+                    if (function_exists($arParams['CUSTOM_FUNCTION_SAVE'])) {
+                        $funcname = $arParams['CUSTOM_FUNCTION_SAVE'];
+                        $funcname($arResult);
+                    }
                     $showForm = false;
                     $arResult['SUCCESS'] = 'Y';
+
                 }
-                $arParams['ERRORS'] = $errors;
-                $arResult['ERRORS'] = $errors;
 
             }
             if ($showForm) {
@@ -195,7 +207,7 @@ if (!class_exists('aform_component')) {
                 $arResult['FORM_END'] .= $this->ENC->SetEasyNoCaptcha(3, '#formid_'.$arParams['FORM_ID']);
                 $have_required = false;
                 foreach ($arResult['FIELDS'] as $key=>$field) {
-                    if ($errors[$field['name']] != '') {
+                    if ($arResult['ERRORS'][$field['name']] != '') {
                         $field['error'] = $arResult['ERRORS'][$field['name']];
                     };
                     if ($field['required'] != '') {
@@ -207,7 +219,7 @@ if (!class_exists('aform_component')) {
                     if ($_REQUEST[$field['name']] == '' && $field['default_value'] != '') {
                         $_REQUEST[$field['name']] = $field['default_value'];
                     }
-                    if (in_array($field['type'], array('text','textinput', 'date', 'tel', 'email'))) {
+                    if (in_array($field['type'], array('text','textinput', 'date', 'tel', 'email', 'password'))) {
                         $arResult['FIELDS'][$key]['html'] = $this->field_input($field, $field['type'] );
                     } else if (in_array($field['type'], array('textarea', 'richedit'))) {
                         $arResult['FIELDS'][$key]['html'] = $this->field_textarea($field);

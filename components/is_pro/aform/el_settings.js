@@ -6,12 +6,17 @@ function AForm_OnElEdit(arParams) {
             let fields = JSON.parse(el.value);
             this.fields = fields;
             this.el = el;
+
+            let d = new Date();
+            this.id = 'Aform_' + this.el.name +  d.getTime();
         }
 
         show() {
             let result = '';
-            const id = 'Aform_' + this.el.name;
-            result += '<table id="' + id + '">';
+            if (document.querySelector('#' + this.id)) {
+                document.querySelector('#' + this.id).remove();
+            };
+            result += '<table id="' + this.id + '">';
             result += '<tr>';
             result += '<td>';
             result += 'Parametr / Field';
@@ -23,7 +28,7 @@ function AForm_OnElEdit(arParams) {
             result += '</td>';
             result += '</tr>';
             for (let k in this.fields) {
-                result += '<tr>';
+                result += '<tr data-key="' + k + '">';
                 result += '<td>';
                 result += '<input name="AForm_params_key" value="' + k + '">';
                 result += '</td>';
@@ -39,7 +44,7 @@ function AForm_OnElEdit(arParams) {
                 result += '</tr>';
             }
             if (this.fields.length == 0) {
-                result += '<tr>';
+                result += '<tr data-key="">';
                 result += '<td>';
                 result += '<input name="AForm_params_key" value="">';
                 result += '</td>';
@@ -47,10 +52,7 @@ function AForm_OnElEdit(arParams) {
                 result += '<input name="AForm_params_value" value="">';
                 result += '</td>';
                 result += '<td>';
-                result += '<button class="up" role="button">&#x2191;</button>';
-                result += '<button class="down" role="button">&#x2193;</button>';
                 result += '<button class="add" role="button">+</button>';
-                result += '<button class="del" role="button">&times;</button>';
                 result += '</td>';
                 result += '</tr>';
             }
@@ -60,20 +62,92 @@ function AForm_OnElEdit(arParams) {
         }
 
         update_fields() {
-            const id = 'Aform_' + this.el.name;
+            const table = document.querySelector('#' + this.id);
+            let fields = {};
+            table.querySelectorAll('tr').forEach(function (item) {
+                if (item.querySelector('input[name="AForm_params_key"]')) {
+                    const key = item.querySelector('input[name="AForm_params_key"]').value;
+                    const val = item.querySelector('input[name="AForm_params_value"]').value;
+                    if (key != '') {
+                        fields[key] = val;
+                    }
+                }
+            })
+            this.fields = fields;
             this.el.value = JSON.stringify(this.fields);
         }
+
+        up(key) {
+            let prevkey = '';
+            let prevval = '';
+            let fields = {};
+            for (let k in this.fields) {
+                if (k == key) {
+                    fields[k] = this.fields[k];
+                } else {
+                    if (prevkey != '') {
+                        fields[prevkey] = prevval;
+                    }
+                    prevkey = k;
+                    prevval = this.fields[k];
+                }
+            }
+            fields[prevkey] = prevval;
+            this.fields = fields;
+        }
+
+        down(key) {
+            let prevkey = '';
+            let prevval = '';
+            let fields = {};
+            for (let k in this.fields) {
+
+                if (k == key) {
+                    prevkey = k;
+                    prevval = this.fields[k];
+                } else {
+                    fields[k] = this.fields[k];
+                    if (prevkey != '') {
+                        fields[prevkey] = prevval;
+                        prevkey = '';
+                        prevval = '';
+                    }
+                }
+            }
+            if (prevkey != '') {
+                fields[prevkey] = prevval;
+            }
+            this.fields = fields;
+        }
+
+        add(key) {
+            let fields = {};
+            let d = new Date();
+
+            for (let k in this.fields) {
+                fields[k] = this.fields[k];
+                if (k == key) {
+                    fields['_' + d.getTime()] = '';
+                }
+            }
+            this.fields = fields;
+        }
+
+        del(key) {
+            let fields = {};
+            for (let k in this.fields) {
+                if (k != key) {
+                    fields[k] = this.fields[k];
+                }
+            }
+            this.fields = fields;
+        }
+
 
     }
 
 
     /********************************************************* */
-
-    let AformFields = new AForm_params(arParams.oInput);
-
-    var obLabel = arParams.oCont.appendChild(BX.create('DIV', {
-        html: AformFields.show()
-    }));
 
     const tr = arParams.oInput.closest('tr');
     if (tr.querySelector('.bxcompprop-cont-table-l')) {
@@ -81,27 +155,112 @@ function AForm_OnElEdit(arParams) {
         tr.querySelector('.bxcompprop-cont-table-r').setAttribute('colspan', '2');;
     }
 
+    let AformFields = new AForm_params(arParams.oInput);
+
+    let obLabel = arParams.oCont.appendChild(BX.create('DIV', {
+        html: AformFields.show()
+    }));
+
+
+
     initUpdate();
 
     function initUpdate() {
-        /*
-        document.querySelectorAll('.AForm_field .field_value').forEach(function (item) {
+
+        document.querySelectorAll('#' + AformFields.id + ' input[name="AForm_params_key"]').forEach(function (item) {
             item.addEventListener(
                 'change',
                 function () {
                     setTimeout(function () {
                         AformFields.update_fields();
-                        document.querySelector('.AformFields').remove();
-                        arParams.oCont.appendChild(BX.create('DIV', {
-                            html: AformFields.show()
-                        }));
-                        initUpdate();
                     }, 100);
                 },
                 false
              );
         });
-        */
+
+        document.querySelectorAll('#' + AformFields.id + ' input[name="AForm_params_value"]').forEach(function (item) {
+            item.addEventListener(
+                'change',
+                function () {
+                    setTimeout(function () {
+                        AformFields.update_fields();
+                    }, 100);
+                },
+                false
+             );
+        });
+
+        document.querySelectorAll('#' + AformFields.id + ' button.up').forEach(function (item) {
+            item.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    let n = item.closest('tr').dataset.key;
+                    AformFields.update_fields();
+                    AformFields.up(n);
+                    let obLabel = arParams.oCont.appendChild(BX.create('DIV', {
+                        html: AformFields.show()
+                    }));
+                    AformFields.update_fields();
+                    initUpdate();
+                },
+                false
+             );
+        });
+        document.querySelectorAll('#' + AformFields.id + ' button.down').forEach(function (item) {
+            item.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    let n = item.closest('tr').dataset.key;
+                    AformFields.update_fields();
+                    AformFields.down(n);
+                    let obLabel = arParams.oCont.appendChild(BX.create('DIV', {
+                        html: AformFields.show()
+                    }));
+                    AformFields.update_fields();
+                    initUpdate();
+                },
+                false
+             );
+        });
+
+        document.querySelectorAll('#' + AformFields.id + ' button.add').forEach(function (item) {
+            item.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    let n = item.closest('tr').dataset.key;
+                    AformFields.update_fields();
+                    AformFields.add(n);
+                    let obLabel = arParams.oCont.appendChild(BX.create('DIV', {
+                        html: AformFields.show()
+                    }));
+                    AformFields.update_fields();
+                    initUpdate();
+                },
+                false
+            );
+        });
+
+        document.querySelectorAll('#' + AformFields.id + ' button.del').forEach(function (item) {
+            item.addEventListener(
+                'click',
+                function (event) {
+                    event.preventDefault();
+                    let n = item.closest('tr').dataset.key;
+                    AformFields.update_fields();
+                    AformFields.del(n);
+                    let obLabel = arParams.oCont.appendChild(BX.create('DIV', {
+                        html: AformFields.show()
+                    }));
+                    AformFields.update_fields();
+                    initUpdate();
+                },
+                false
+             );
+        });
     }
 
 
