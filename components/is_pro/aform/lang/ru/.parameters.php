@@ -25,5 +25,7 @@ $MESS["EMAIL_FIELDS"] = "Поля EMAIL сообшения";
 $MESS["SMS_EVENT"] = "Тип события для отправки SMS";
 $MESS["SMS_FIELDS"] = "Поля SMS сообшения";
 $MESS['CUSTOM'] = "Дополнительные параметры";
+$MESS['CUSTOM_FUNCTION_VALIDATION'] = "Имя PHP функции, для проверки данных (должна вернуть true, если все хорошо)";
 $MESS['CUSTOM_FUNCTION_SAVE'] = "Имя PHP функции, которая вызовиться после успешной отправки";
+
 ?>

@@ -181,7 +181,13 @@ if (!class_exists('aform_component')) {
             $showForm = true;
             if ($_REQUEST['form_id'] == $arParams['FORM_ID']) {
                 if ($this->ENC->CheckEasyNoCaptha ()) {
-                    $arResult['ERRORS'] = $this->Save();
+                    if (function_exists($arParams['CUSTOM_FUNCTION_VALIDATION'])) {
+                        $funcname = $arParams['CUSTOM_FUNCTION_VALIDATION'];
+                        $arResult['ERRORS'] = $funcname($arResult);
+                    }
+                    if (count($arResult['ERRORS']) == 0) {
+                        $arResult['ERRORS'] = $this->Save();
+                    }
                 } else {
                     $arResult['ERRORS']['captcha'] = 'Защита от автоматического заполения не пройдена';
                 }

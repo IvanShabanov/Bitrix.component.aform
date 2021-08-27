@@ -196,6 +196,12 @@ $arComponentParameters = array(
             'JS_EVENT' => 'AForm_OnElEdit',
             'JS_DATA' => '',
         ),
+        'CUSTOM_FUNCTION_VALIDATION'=>  Array(
+            "PARENT" => "CUSTOM",
+            "NAME" => GetMessage("CUSTOM_FUNCTION_VALIDATION"),
+            'DEFAULT' => '',
+            "TYPE" => "STRING",
+        ),
         'CUSTOM_FUNCTION_SAVE'=>  Array(
             "PARENT" => "CUSTOM",
             "NAME" => GetMessage("CUSTOM_FUNCTION_SAVE"),
