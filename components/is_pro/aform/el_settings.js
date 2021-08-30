@@ -30,10 +30,10 @@ function AForm_OnElEdit(arParams) {
             for (let k in this.fields) {
                 result += '<tr data-key="' + k + '">';
                 result += '<td>';
-                result += '<input name="AForm_params_key" value="' + k + '">';
+                result += '<input class="AForm_params_key" value="' + k + '">';
                 result += '</td>';
                 result += '<td>';
-                result += '<input name="AForm_params_value" value="' + this.fields[k] + '">';
+                result += '<input class="AForm_params_value" value="' + this.fields[k] + '">';
                 result += '</td>';
                 result += '<td>';
                 result += '<button class="up" role="button">&#x2191;</button>';
@@ -46,10 +46,10 @@ function AForm_OnElEdit(arParams) {
             if (this.fields.length == 0) {
                 result += '<tr data-key="">';
                 result += '<td>';
-                result += '<input name="AForm_params_key" value="">';
+                result += '<input class="AForm_params_key" value="">';
                 result += '</td>';
                 result += '<td>';
-                result += '<input name="AForm_params_value" value="">';
+                result += '<input class="AForm_params_value" value="">';
                 result += '</td>';
                 result += '<td>';
                 result += '<button class="add" role="button">+</button>';
@@ -65,9 +65,9 @@ function AForm_OnElEdit(arParams) {
             const table = document.querySelector('#' + this.id);
             let fields = {};
             table.querySelectorAll('tr').forEach(function (item) {
-                if (item.querySelector('input[name="AForm_params_key"]')) {
-                    const key = item.querySelector('input[name="AForm_params_key"]').value;
-                    const val = item.querySelector('input[name="AForm_params_value"]').value;
+                if (item.querySelector('input.AForm_params_key')) {
+                    const key = item.querySelector('input.AForm_params_key').value;
+                    const val = item.querySelector('input.AForm_params_value').value;
                     if (key != '') {
                         fields[key] = val;
                     }
@@ -167,7 +167,7 @@ function AForm_OnElEdit(arParams) {
 
     function initUpdate() {
 
-        document.querySelectorAll('#' + AformFields.id + ' input[name="AForm_params_key"]').forEach(function (item) {
+        document.querySelectorAll('#' + AformFields.id + ' input.AForm_params_key').forEach(function (item) {
             item.addEventListener(
                 'change',
                 function () {
@@ -179,7 +179,7 @@ function AForm_OnElEdit(arParams) {
              );
         });
 
-        document.querySelectorAll('#' + AformFields.id + ' input[name="AForm_params_value"]').forEach(function (item) {
+        document.querySelectorAll('#' + AformFields.id + ' input.AForm_params_value').forEach(function (item) {
             item.addEventListener(
                 'change',
                 function () {

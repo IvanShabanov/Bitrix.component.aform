@@ -5,17 +5,17 @@ function AForm_OnFieldsEdit(arParams) {
         fields = {};
         inputs_field = {
             'type':     '<td>TYPE:</td><td>%SELECTTYPE%</td>',
-            'name':     '<td>NAME:</td><td><input class="field_value" type="text" name="AFormField_name" value="%VALUE%" title="Name [A-Z0-9_]" placeholder="Name [A-Z0-9_]"></td>',
-            'title':    '<td>TITLE:</td><td><input class="field_value" type="text" name="AFormField_title" value="%VALUE%" title="Title / Label" placeholder="Title / Label"></td>',
-            'extra':    '<td>Extra input attribute:</td><td><input class="field_value" type="text" name="AFormField_extra" value="%VALUE%" title="extra input attribute" placeholder="extra input attribute"></td>',
-            'before':   '<td>HTML before input:</td><td><input class="field_value" type="text" name="AFormField_before" value="%VALUE%" title="HTML before input" placeholder="HTML before input"></td>',
-            'after':    '<td>HTML after input:</td><td><input class="field_value" type="text" name="AFormField_after" value="%VALUE%" title="HTML after input" placeholder="HTML after input"></td>',
-            'html':     '<td>HTML code:</td><td><textarea class="field_value" name="AFormField_html" title="HTML code" placeholder="HTML code" ></textarea></td>',
-            'values':   '<td>Values one by line:</td><td><textarea class="field_value" name="AFormField_values" title="Values one by line" placeholder="Values one by line" ></textarea></td>',
-            'value':    '<td>Value:</td><td><input class="field_value" type="text" name="AFormField_value" value="%VALUE%" title="Value" placeholder="Value"></td>',
-            'default_value': '<td>Default value:</td><td><input class="field_value" type="text" name="AFormField_default_value" value="%VALUE%" title="Default value" placeholder="Default value"></td>',
-            'required': '<td>Required</td><td><input class="field_value" type="checkbox" name="AFormField_required" value="Y" title="required" placeholder="required"></td>',
-            'strip_tags': '<td>Posted value not be striped tags</td><td><input class="field_value" type="checkbox" name="AFormField_strip_tags" value="N" title="Not strip_tags" placeholder="Not strip_tags"></td>'
+            'name':     '<td>NAME:</td><td><input class="field_value" type="text" data-name="name" value="%VALUE%" title="Name [A-Z0-9_]" placeholder="Name [A-Z0-9_]"></td>',
+            'title':    '<td>TITLE:</td><td><input class="field_value" type="text" data-name="title" value="%VALUE%" title="Title / Label" placeholder="Title / Label"></td>',
+            'extra':    '<td>Extra input attribute:</td><td><input class="field_value" type="text" data-name="extra" value="%VALUE%" title="extra input attribute" placeholder="extra input attribute"></td>',
+            'before':   '<td>HTML before input:</td><td><input class="field_value" type="text" data-name="before" value="%VALUE%" title="HTML before input" placeholder="HTML before input"></td>',
+            'after':    '<td>HTML after input:</td><td><input class="field_value" type="text" data-name="after" value="%VALUE%" title="HTML after input" placeholder="HTML after input"></td>',
+            'html':     '<td>HTML code:</td><td><textarea class="field_value" data-name="html" title="HTML code" placeholder="HTML code" ></textarea></td>',
+            'values':   '<td>Values one by line:</td><td><textarea class="field_value" data-name="values" title="Values one by line" placeholder="Values one by line" ></textarea></td>',
+            'value':    '<td>Value:</td><td><input class="field_value" type="text" data-name="value" value="%VALUE%" title="Value" placeholder="Value"></td>',
+            'default_value': '<td>Default value:</td><td><input class="field_value" type="text" data-name="default_value" value="%VALUE%" title="Default value" placeholder="Default value"></td>',
+            'required': '<td>Required</td><td><input class="field_value" type="checkbox" data-name="required" value="Y" title="required" placeholder="required"></td>',
+            'strip_tags': '<td>Posted value not be striped tags</td><td><input class="field_value" type="checkbox" data-name="strip_tags" value="N" title="Not strip_tags" placeholder="Not strip_tags"></td>'
         };
 
         types = {
@@ -184,7 +184,7 @@ function AForm_OnFieldsEdit(arParams) {
                 fields[i] = {};
                 field.querySelectorAll('.field_value').forEach(function (item) {
                     if (item.value != '') {
-                        let name = item.name.replace('AFormField_', '');
+                        let name = item.dataset.name;
                         if (item.type != 'checkbox') {
                             fields[i][name] = item.value;
                         } else {
@@ -203,7 +203,7 @@ function AForm_OnFieldsEdit(arParams) {
 
         selector_types(curtype) {
             let result = '';
-            result += '<select class="field_value" name="AFormField_type" style="min-width: 70px;" title="Type">';
+            result += '<select class="field_value" data-name="type" style="min-width: 70px;" title="Type">';
             for (let k in this.types) {
                 result += '<option value="' + k + '"';
                 if (k == curtype) {
