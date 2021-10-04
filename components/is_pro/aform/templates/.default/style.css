@@ -1,9 +1,6 @@
 .FRONTEND_FORM {
     display: block;
     box-sizing: border-box;
-    max-width: 500px;
-    margin: 25px auto;
-
 }
 
 .FRONTEND_FORM * {
@@ -50,34 +47,22 @@
 .FRONTEND_FORM .field textarea,
 .FRONTEND_FORM .field select {
     display: inline-block;
-    width: 100%;
-    border-radius: 5px;
+    width: 80%;
     padding: 12px 20px;
     border: 1px solid #ccc;
 }
 
+.FRONTEND_FORM .field textarea {
+    width: 100%;
+}
+
+.FRONTEND_FORM .field input::placeholder {
+    color: transparent;
+}
+
 .FRONTEND_FORM .field label {
     display: inline-block;
-}
-
-.FRONTEND_FORM .field.tel label,
-.FRONTEND_FORM .field.date label,
-.FRONTEND_FORM .field.email label,
-.FRONTEND_FORM .field.text label,
-.FRONTEND_FORM .field.textarea label {
-    position: absolute;
-    display: inline-block;
-    padding: 0px 5px;
-    background-color: #fff;
-    color: #222;
-    transition: all ease 0.2s;
-    top: 12px;
-    left: 15px;
-}
-
-.FRONTEND_FORM .field:hover label,
-.FRONTEND_FORM .field.active label {
-    top: -10px;
+    width: 20%;
 }
 
 .FRONTEND_FORM .field input[type="checkbox"],
