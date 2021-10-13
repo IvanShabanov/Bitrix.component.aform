@@ -85,12 +85,13 @@ $APPLICATION->IncludeComponent(
 
 
 /************************************** */
-/************************************** */
+
 /************************************** */
 
 class aform_component extends CBitrixComponent {
     private $ENC;
 
+    /****************/
     public function onPrepareComponentParams($arParams)
     {
         /* Подключим невидимую каптчу */
@@ -167,6 +168,18 @@ class aform_component extends CBitrixComponent {
                         $field['title'] = 'Отправить';
                     };
                 };
+                if ($field['type'] == 'select') {
+                    if (!is_array($field['values'])) {
+                        $field['values'] = explode("\n", $field['values']);
+                        if (is_array($field['values'])) {
+                            foreach ($field['values'] as $key=>$val) {
+                                if (trim($val) != '') {
+                                    $field['values'][$key] = trim($val);
+                                };
+                            };
+                        };
+                    };
+                };
                 if (empty($field['id'])) {
                     $field['id'] = md5($arParams['FORM_ID'].implode('', $field));
                 };
@@ -204,7 +217,7 @@ class aform_component extends CBitrixComponent {
     {
         try
         {
-            $this->getResult();
+            $this->Doit();
             $this->includeComponentTemplate();
         }
         catch (SystemException $e)
@@ -212,14 +225,14 @@ class aform_component extends CBitrixComponent {
             ShowError($e->getMessage());
         }
     }
-
+    /******************************** */
     protected function checkModules()
     {
         if (!Loader::includeModule('iblock'))
-            throw new SystemException(Loc::getMessage('CPS_MODULE_NOT_INSTALLED', array('#NAME#' => 'iblock')));
+            throw new SystemException(Loc::getMessage('IBLOCK_MODULE_NOT_INSTALLED'));
     }
-
-    protected function getResult()
+    /******************************** */
+    protected function Doit()
     {
 
         $arParams = $this->arParams;
@@ -250,10 +263,10 @@ class aform_component extends CBitrixComponent {
                             };
                             $arResult["FIELDS"][$field['name']]['posted_value'] = $uploaded_str;
                         } else {
-                            $arResult['ERRORS'][$field['name']] = 'Ощибка загрузки файла';
+                            $arResult['ERRORS'][$field['name']] = Loc::getMessage('ERROR_FILE_NOT_LOADED');
                         };
                         if (($field['required'] != '') && (count($uploaded) == 0)) {
-                            $arResult['ERRORS'][$field['name']] = 'Поле "'.$field['title'].'" не заполнено';
+                            $arResult['ERRORS'][$field['name']] = Loc::getMessage('FIELD_REQURED', array('#FILED#'=>$field['title']));
                         };
                     };
                 };
@@ -270,7 +283,9 @@ class aform_component extends CBitrixComponent {
                     $arResult['ERRORS'] = $this->Save();
                 };
             } else {
-                $arResult['ERRORS']['captcha'] = 'Защита от автоматического заполения не пройдена';
+                $arResult['ERRORS']['captcha'] = Loc::getMessage('WRONG_CAPTCHA');
+
+
             }
 
             if (count($arResult['ERRORS']) == 0) {
@@ -299,6 +314,8 @@ class aform_component extends CBitrixComponent {
                 if ($field['required'] != '') {
                     $have_required = true;
                 }
+
+
                 $field['~title'] = trim(strip_tags($field['title']));
                 $field['type'] = trim(strip_tags($field['type']));
                 $field['name'] = trim(strip_tags($field['name']));
@@ -324,7 +341,7 @@ class aform_component extends CBitrixComponent {
                 }
             }
             if (($have_required) && ($arParams['show_requred_text'] != 'N')) {
-                $arResult['REQURED_TEXT_WARNING'] = '<p class="requred_text">* - обозначены поля обязательные для заполнения<p>';
+                $arResult['REQURED_TEXT_WARNING'] = $this->message(Loc::getMessage('REQURED_TEXT_WARNING'), 'requred_text');
             };
 
         };
@@ -341,7 +358,7 @@ class aform_component extends CBitrixComponent {
         $arResult = $arParams;
 
         foreach ($arParams['FIELDS'] as $field) {
-            if ($field['type'] == 'submit') {
+            if (in_array($field['type'], array('submit', 'html'))) {
             } else {
                 $message .= '<p>'.$field['title'].': '.$field['posted_value'].'</p>';
                 $strFind = '%'.$field['name'].'%';
@@ -350,7 +367,7 @@ class aform_component extends CBitrixComponent {
             };
         };
 
-        $message .= '<p>Send from page: <a href="'.$_SERVER['HTTP_REFERER'].'">'.$_SERVER['HTTP_REFERER'].'</a></p>';
+        $message .= Loc::getMessage('SEND_FROM_PAGE', array('#PAGE_LINK#'=> $_SERVER['HTTP_REFERER']));
 
         $strFind = '%FIELDS%';
         $strSet = $message;
@@ -614,6 +631,7 @@ class aform_component extends CBitrixComponent {
         }
         $result .= '<label for="'.$field['name'].$field['id'].'">'.$field['title'].'</label>';
         $result .= '<select id="'.$field['name'].$field['id'].'" name="'.$field['name'].'" title="'.$field['~title'].'" '.$required.' '.$field['extra'].'>';
+
         if (is_array($field['values'])) {
             foreach ($field['values'] as $val){
                 $selected = '';
