@@ -392,8 +392,14 @@ class aform_component extends CBitrixComponent {
             foreach ($arLoadProductArray_DEFAULT as $key=>$val) {
                 if (empty($arLoadProductArray[$key])) {
                     $arLoadProductArray[$key] = $val;
-                }
-            }
+                };
+            };
+            foreach ($arLoadProductArray as $key=>$val) {
+                if (mb_substr($key, 0, 9) == 'PROPERTY_') {
+                    $prop_code = mb_substr($key, 9);
+                    $arLoadProductArray['PROPERTY_VALUES'][$prop_code] = $val;
+                };
+            };
             $el = new CIBlockElement;
             if (!$el->Add($arLoadProductArray)){
                 ShowError($el->LAST_ERROR);
